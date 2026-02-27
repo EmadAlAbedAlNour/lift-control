@@ -7,7 +7,7 @@ Lift Control is a full-stack web platform for an elevator-specialized company (i
 - Next.js 16 (App Router)
 - TypeScript
 - Tailwind CSS
-- Prisma + SQLite
+- Prisma + PostgreSQL
 - Zod validation
 - Cookie session auth (JWT + DB-backed session records)
 
@@ -67,7 +67,7 @@ npm install
 copy .env.example .env
 ```
 
-3. Generate Prisma client and sync DB:
+3. Set PostgreSQL credentials in `.env` (`DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET`), then sync DB:
 
 ```bash
 npm run db:generate
@@ -99,6 +99,7 @@ npm run build
 Required:
 
 - `DATABASE_URL`
+- `DIRECT_URL`
 - `JWT_SECRET`
 
 Optional integration vars:
