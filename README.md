@@ -67,7 +67,13 @@ npm install
 copy .env.example .env
 ```
 
-3. Set PostgreSQL credentials in `.env` (`DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET`), then sync DB:
+3. Set PostgreSQL credentials in `.env` (`DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET`).
+
+Optional but recommended for production uploads:
+- `STORAGE_PROVIDER=vercel-blob`
+- `BLOB_READ_WRITE_TOKEN=<your token>`
+
+Then sync DB:
 
 ```bash
 npm run db:generate
@@ -107,6 +113,7 @@ Optional integration vars:
 - `RESEND_API_KEY`
 - `RESEND_FROM`
 - `STORAGE_PROVIDER`
+- `BLOB_READ_WRITE_TOKEN`
 - `STORAGE_UPLOAD_URL`
 - `ANALYTICS_PROVIDER`
 - `PAYMENT_PROVIDER`

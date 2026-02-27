@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 
 import { requireAuth } from "@/lib/auth";
 import { checkRateLimit, error, json, preflight } from "@/lib/api-utils";
-import { MAX_IMAGE_UPLOAD_BYTES, allowedImageMimeTypes, saveImageToLocalStorage } from "@/lib/integrations/storage";
+import { MAX_IMAGE_UPLOAD_BYTES, allowedImageMimeTypes, saveImage } from "@/lib/integrations/storage";
 
 export const runtime = "nodejs";
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (fileValue.size > MAX_IMAGE_UPLOAD_BYTES) {
-    return error("حجم الصورة يتجاوز الحد المسموح (8MB).", 422);
+    return error("حجم الصورة يتجاوز الحد المسموح (4MB).", 422);
   }
 
   const mimeType = fileValue.type.toLowerCase();
@@ -70,12 +70,25 @@ export async function POST(request: NextRequest) {
   const scopeValue = formData.get("scope");
   const scope = typeof scopeValue === "string" ? normalizeScope(scopeValue) : undefined;
   const arrayBuffer = await fileValue.arrayBuffer();
-  const url = await saveImageToLocalStorage({
-    arrayBuffer,
-    originalName: fileValue.name,
-    mimeType,
-    folder: scope
-  });
+
+  let url: string;
+
+  try {
+    url = await saveImage({
+      arrayBuffer,
+      originalName: fileValue.name,
+      mimeType,
+      folder: scope
+    });
+  } catch (uploadError) {
+    console.error("Image upload failed", uploadError);
+
+    if (uploadError instanceof Error && uploadError.message.includes("BLOB_READ_WRITE_TOKEN")) {
+      return error("تعذر رفع الصورة: إعدادات التخزين غير مكتملة على الخادم.", 500);
+    }
+
+    return error("تعذر رفع الصورة حالياً. حاول مرة أخرى.", 500);
+  }
 
   return json(
     {
