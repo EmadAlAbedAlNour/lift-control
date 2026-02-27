@@ -9,8 +9,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: file:./dev.db
-      JWT_SECRET: ci-secret-value-with-32-characters-minimum
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
