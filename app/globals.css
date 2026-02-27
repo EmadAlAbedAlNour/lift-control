@@ -1,0 +1,123 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-page: #f4f6f7;
+  --color-surface: #ffffff;
+  --color-muted: #ecf0f2;
+  --color-surface-soft: #f8fafb;
+  --color-sidebar-soft: #f3f6f8;
+  --color-ink: #172026;
+  --color-subtext: #4f5d68;
+  --color-primary: #0f4c5c;
+  --color-primary-strong: #0b3f4b;
+  --color-primary-soft: #e7f0f2;
+  --color-accent: #c57b57;
+  --color-border: #d8e0e4;
+  --color-disabled: #5f7a83;
+  --color-overlay: #1b272d;
+  --color-success: #2d7a4a;
+  --color-success-soft: #edf7f1;
+  --color-success-border: #b8d3c2;
+  --color-success-text: #1e5a3d;
+  --color-warning: #8c6b2f;
+  --color-warning-soft: #f6f1e8;
+  --color-warning-text: #7a5a2a;
+  --color-progress-soft: #e7f3ef;
+  --color-progress-text: #0d684d;
+  --color-complete-soft: #edf5ea;
+  --color-complete-text: #316d1d;
+  --color-error-soft: #fbf2ef;
+  --color-error-border: #d8b2a3;
+  --color-error-text: #7a2f15;
+  --color-danger-soft: #fff8f6;
+  --color-danger-soft-hover: #fdece7;
+  --color-danger-border: #e6c7bd;
+  --color-danger-text: #9f3e24;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-cairo), "Segoe UI", sans-serif;
+  background-color: var(--color-page);
+  background-image: linear-gradient(180deg, #f7f9fa 0%, #f3f6f7 100%);
+  color: var(--color-ink);
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-manrope), var(--font-cairo), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@layer utilities {
+  .container-shell {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply min-h-11 w-full rounded-md border border-border bg-surface px-4 text-base text-ink focus:border-primary focus:outline-none;
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors duration-200 ease-in-out hover:bg-primary-strong disabled:cursor-not-allowed disabled:bg-disabled;
+  }
+
+  .btn-secondary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-subtext transition-colors duration-200 ease-in-out hover:border-primary hover:text-primary;
+  }
+
+  .btn-danger {
+    @apply inline-flex min-h-11 items-center justify-center rounded-md border border-danger-border bg-danger-soft px-4 py-2 text-sm font-medium text-danger-text transition-colors duration-200 ease-in-out hover:bg-danger-soft-hover disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .alert-error {
+    @apply rounded-md border border-error-border bg-error-soft p-3 text-sm text-error-text;
+  }
+
+  .alert-success {
+    @apply rounded-md border border-success-border bg-success-soft p-3 text-sm text-success-text;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in {
+    animation: fadeInUp 700ms ease-out both;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

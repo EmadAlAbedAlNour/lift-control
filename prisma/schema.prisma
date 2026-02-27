@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  SUPERVISOR
+  ADMIN
+}
+
+enum ProjectType {
+  PASSENGER
+  CARGO
+  PANORAMIC
+  HOSPITAL
+}
+
+enum ProjectStatus {
+  NEW
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum SettingCategory {
+  PROFILE
+  NOTIFICATIONS
+  SECURITY
+  BILLING
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+}
+
+model User {
+  id            String               @id @default(cuid())
+  name          String
+  email         String               @unique
+  passwordHash  String
+  phone         String?
+  role          UserRole             @default(USER)
+  avatarUrl     String
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  sessions      Session[]
+  resetTokens   PasswordResetToken[]
+  notifications Notification[]
+}
+
+model LiftProject {
+  id             String        @id @default(cuid())
+  title          String
+  location       String
+  clientName     String
+  type           ProjectType
+  floors         Int
+  status         ProjectStatus
+  nextVisit      DateTime
+  summary        String
+  speedMps       Float
+  loadKg         Int
+  warrantyMonths Int
+  coverImage     String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model ProductSection {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  imageUrl    String?
+  sortOrder   Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id         String         @id @default(cuid())
+  sectionId  String
+  section    ProductSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  name       String
+  sku        String?
+  brand      String?
+  summary    String
+  imageUrl   String
+  isActive   Boolean        @default(true)
+  sortOrder  Int            @default(0)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([sectionId])
+  @@unique([sectionId, name])
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  email     String?
+  phone     String?
+  location  String?
+  notes     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model SystemSetting {
+  key       String          @id
+  label     String
+  value     String
+  category  SettingCategory
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model Notification {
+  id          String              @id @default(cuid())
+  title       String
+  description String
+  channel     NotificationChannel
+  createdAt   DateTime            @default(now())
+  read        Boolean             @default(false)
+  userId      String?
+  user        User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  usedAt    DateTime?
+}
